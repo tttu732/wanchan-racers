@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ワンチャンレーサーズ 公式サイト</title>
+<meta name="description" content="見習い整備士の柴犬ゴロウが、ジャンク部品でジェットエンジンを組み上げてスカイGPに挑む！ バーコードで部品探し、エンジン改造、3D空中レース。">
+<meta property="og:title" content="ワンチャンレーサーズ">
+<meta property="og:description" content="ジャンクから、空のてっぺんへ。柴犬ゴロウのジェットエンジン改造レースゲーム。">
+<meta property="og:image" content="https://tttu732.github.io/wanchan-racers/icon.webp">
+<link rel="icon" href="https://tttu732.github.io/wanchan-racers/icon.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* 空とお日さまの世界。太い黒ふちのポップなステッカー調（ゲーム内のUIと同じ） */
+  --sky: #38bdf8;
+  --sky-deep: #0c4a6e;
+  --sun: #facc15;
+  --flame: #f97316;
+  --ink: #1e293b;
+  --paper: #fffbeb;
+  --sub: #475569;
+  --display: "Mochiy Pop One", "M PLUS Rounded 1c", sans-serif;
+  --body: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #7dd3fc; color: var(--ink); font-family: var(--body); line-height: 1.8; }
+img { max-width: 100%; display: block; }
+/* ページ全体の空：ゆっくり流れる雲 */
+.sky-clouds { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #38bdf8 0%, #7dd3fc 40%, #bae6fd 75%, #e0f2fe 100%); }
+.sky-clouds .cloud { position: absolute; }
+.sky-clouds .k1 { width: 240px; height: 58px; left: 4%; top: 18%; } .sky-clouds .k1::before { width: 96px; height: 96px; left: 44px; top: -50px; } .sky-clouds .k1::after { width: 74px; height: 74px; left: 120px; top: -34px; }
+.sky-clouds .k2 { width: 180px; height: 44px; right: 6%; top: 42%; opacity: 0.75; } .sky-clouds .k2::before { width: 72px; height: 72px; left: 30px; top: -38px; } .sky-clouds .k2::after { width: 56px; height: 56px; left: 92px; top: -26px; }
+.sky-clouds .k3 { width: 300px; height: 70px; left: 30%; top: 72%; opacity: 0.8; } .sky-clouds .k3::before { width: 120px; height: 120px; left: 60px; top: -64px; } .sky-clouds .k3::after { width: 90px; height: 90px; left: 160px; top: -40px; }
+.sky-clouds .k4 { width: 150px; height: 38px; left: 70%; top: 8%; opacity: 0.6; } .sky-clouds .k4::before { width: 60px; height: 60px; left: 24px; top: -30px; } .sky-clouds .k4::after { width: 48px; height: 48px; left: 74px; top: -20px; }
+.sky-clouds .cloud { animation: drift 60s linear infinite alternate; }
+.sky-clouds .k2, .sky-clouds .k4 { animation-duration: 80s; animation-direction: alternate-reverse; }
+@keyframes drift { from { transform: translateX(-30px); } to { transform: translateX(40px); } }
+a { color: var(--sky-deep); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--flame); outline-offset: 3px; }
+h1, h2, h3 { text-wrap: balance; }
+
+/* ナビ */
+.nav { position: sticky; top: 0; z-index: 10; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(6px); border-bottom: 3px solid var(--ink); }
+.nav-in { max-width: 1080px; margin: 0 auto; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+.nav-logo { display: flex; align-items: center; gap: 8px; font-family: var(--display); text-decoration: none; color: var(--ink); font-size: 17px; }
+.nav-logo img { width: 36px; height: 36px; border-radius: 9px; border: 2px solid var(--ink); }
+.nav-links { margin-left: auto; display: flex; gap: 14px; flex-wrap: wrap; font-weight: 800; font-size: 14px; }
+.nav-links a { color: var(--ink); text-decoration: none; }
+.nav-links a:hover { color: var(--flame); }
+@media (max-width: 640px) { .nav-links { display: none; } }
+
+/* ヒーロー */
+.hero { position: relative; overflow: hidden; }
+.hero::before { content: ""; position: absolute; inset: 0; background: repeating-conic-gradient(from 0deg at 70% 40%, rgba(255,255,255,0.13) 0deg 10deg, transparent 10deg 20deg); }
+.cloud { position: absolute; background: #fff; border-radius: 999px; opacity: 0.9; }
+.cloud::before, .cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.c1 { width: 220px; height: 54px; left: -40px; bottom: 60px; } .c1::before { width: 90px; height: 90px; left: 40px; top: -46px; } .c1::after { width: 70px; height: 70px; left: 110px; top: -32px; }
+.c2 { width: 180px; height: 44px; right: 6%; top: 70px; opacity: 0.7; } .c2::before { width: 70px; height: 70px; left: 30px; top: -36px; } .c2::after { width: 56px; height: 56px; left: 90px; top: -24px; }
+.hero-in { position: relative; max-width: 1080px; margin: 0 auto; padding: 48px 16px 56px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 24px; align-items: center; }
+@media (max-width: 820px) { .hero-in { grid-template-columns: 1fr; padding-top: 28px; } }
+.tag { display: inline-block; background: var(--ink); color: var(--sun); font-weight: 800; padding: 4px 14px; border-radius: 999px; font-size: 14px; }
+.logo { font-family: var(--display); font-weight: 400; font-size: clamp(38px, 7vw, 72px); line-height: 1.12; margin: 14px 0 8px; color: #fff;
+  -webkit-text-stroke: 3px var(--ink); paint-order: stroke fill; text-shadow: 0 6px 0 var(--ink); letter-spacing: 0.02em; }
+.catch { font-family: var(--display); font-size: clamp(20px, 3.4vw, 30px); color: var(--ink); margin: 8px 0 12px; }
+.lead { font-weight: 700; max-width: 34em; margin: 0 0 22px; }
+.stores { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.store { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: #fff; text-decoration: none; border-radius: 14px; padding: 10px 18px; border: 3px solid var(--ink); box-shadow: 0 5px 0 #0f172a; font-weight: 800; }
+.store small { display: block; font-size: 11px; font-weight: 700; opacity: 0.8; line-height: 1.2; }
+.store b { display: block; font-size: 18px; line-height: 1.2; }
+.store[aria-disabled="true"] { cursor: default; }
+.store:hover { transform: translateY(-2px); }
+.price { font-weight: 800; font-size: 13px; background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 4px 12px; }
+.hero-art { position: relative; min-height: 460px; }
+.hero-cast { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: flex-end; gap: 0; }
+.hero-cast img { width: 34%; max-width: 200px; filter: drop-shadow(0 6px 0 rgba(30,41,59,0.25)); animation: bob 2.4s ease-in-out infinite; }
+.hero-cast .c-tetsu { animation-delay: -0.8s; margin-right: -4%; }
+.hero-cast .c-goro { width: 38%; max-width: 230px; z-index: 1; animation-delay: -0.2s; }
+.hero-cast .c-mimi { animation-delay: -1.5s; margin-left: -4%; }
+.hero-cast::before { content: ""; position: absolute; left: 4%; right: 4%; bottom: -26px; height: 70px; background: #fff; border-radius: 999px; opacity: 0.95; box-shadow: -60px -18px 0 -6px #fff, 70px -22px 0 -8px #fff; }
+@media (max-width: 820px) { .hero-art { min-height: 400px; } }
+.hero-plane { width: min(470px, 92%); margin: 0 auto 0 auto; animation: fly 4.5s ease-in-out infinite; filter: drop-shadow(0 18px 18px rgba(12,74,110,0.35)); }
+.hero-goro { position: absolute; width: 42%; left: 0; bottom: -8px; animation: bob 2.4s ease-in-out infinite; filter: drop-shadow(0 6px 0 rgba(30,41,59,0.25)); }
+@keyframes fly { 0%,100% { transform: translate(0,0) rotate(-2deg); } 50% { transform: translate(-10px,-16px) rotate(1deg); } }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) { .hero-plane, .hero-goro, .float, .hero-cast img, .sky-clouds .cloud { animation: none; } html { scroll-behavior: auto; } }
+
+/* 共通セクション */
+section { padding: 72px 16px; }
+.wrap { max-width: 1080px; margin: 0 auto; }
+.eyebrow { font-family: var(--display); color: var(--flame); font-size: 15px; letter-spacing: 0.12em; }
+.h2 { font-family: var(--display); font-weight: 400; font-size: clamp(28px, 4.4vw, 42px); margin: 6px 0 14px; line-height: 1.3; }
+.sec-lead { max-width: 40em; font-weight: 700; color: var(--ink); }
+
+/* ストーリー */
+.story .wrap { background: #fff; border: 4px solid var(--ink); border-radius: 32px; padding: 32px; box-shadow: 0 8px 0 var(--ink); }
+@media (max-width: 640px) { .story .wrap { padding: 22px 16px; } }
+.story-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; align-items: center; }
+@media (max-width: 820px) { .story-grid { grid-template-columns: 1fr; } }
+.bubble { position: relative; background: var(--paper); border: 3px solid var(--ink); border-radius: 20px; padding: 16px 18px; font-weight: 700; }
+.talk { display: grid; gap: 14px; }
+.talk-row { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: center; }
+.talk-row img { width: 76px; height: 76px; object-fit: contain; }
+.talk-row .who { font-size: 12px; color: var(--sub); font-weight: 800; display: block; }
+
+/* 遊び方（ポイント） */
+.points { }
+.points > .wrap > .eyebrow, .points > .wrap > .h2, .points > .wrap > .sec-lead { text-align: center; margin-left: auto; margin-right: auto; }
+.point-text { background: rgba(255,255,255,0.88); border: 3px solid var(--ink); border-radius: 24px; padding: 22px; }
+.point { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; margin-top: 56px; }
+.point:nth-child(even) .point-art { order: 2; }
+@media (max-width: 820px) { .point { grid-template-columns: 1fr; } .point:nth-child(even) .point-art { order: 0; } }
+.point-no { display: inline-block; font-family: var(--display); background: var(--sun); border: 3px solid var(--ink); border-radius: 12px; padding: 2px 12px; font-size: 14px; }
+.point h3 { font-family: var(--display); font-weight: 400; font-size: clamp(24px, 3.4vw, 32px); margin: 10px 0 8px; line-height: 1.35; }
+.point p { margin: 0 0 10px; max-width: 32em; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip { background: #fff; border: 2px solid var(--ink); border-radius: 999px; padding: 2px 12px; font-size: 13px; font-weight: 800; }
+.point-art { background: #fff; border: 4px solid var(--ink); border-radius: 28px; padding: 18px; box-shadow: 0 8px 0 var(--ink); }
+.phone { width: 230px; border: 6px solid var(--ink); border-radius: 30px; overflow: hidden; box-shadow: 0 8px 0 rgba(30,41,59,0.25); background: var(--ink); }
+.phones { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+.phones .phone:nth-child(2) { transform: translateY(24px); }
+.phones3 { flex-wrap: nowrap; gap: 10px; }
+.phones3 .phone { width: calc((100% - 20px) / 3); max-width: 150px; border-radius: 22px; border-width: 5px; }
+.phones3 .phone img { display: block; width: 100%; }
+.job-cap { margin: 16px 0 8px; font-weight: 800; font-size: 13px; text-align: center; }
+.icon-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(72px, 1fr)); gap: 10px; align-items: end; }
+.icon-row figure { margin: 0; text-align: center; font-size: 12px; font-weight: 800; }
+.icon-row img { margin: 0 auto 4px; height: 72px; object-fit: contain; }
+.engine-pair { display: grid; gap: 10px; }
+.engine-pair figure { margin: 0; }
+.engine-pair figcaption { font-weight: 800; font-size: 13px; text-align: center; }
+.arrow { text-align: center; font-family: var(--display); color: var(--flame); font-size: 22px; line-height: 1; }
+
+
+/* 工場の工程フロー */
+.fflow { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px 2px; margin-top: 18px; }
+.fstep { min-width: 60px; white-space: nowrap; text-align: center; font-size: 11px; font-weight: 800; line-height: 1.3; }
+.fstep img { width: 50px; height: 50px; object-fit: contain; margin: 0 auto 2px; background: #f1f5f9; border: 2px solid var(--ink); border-radius: 14px; padding: 3px; }
+.farrow { width: 16px; height: 16px; flex: none; }
+.fdone { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 6px; }
+.fdone .card { display: flex; align-items: center; gap: 12px; background: #fff7ed; border: 3px solid var(--flame); border-radius: 18px; padding: 8px 16px; }
+.fdone img { height: 92px; width: auto; }
+.fdone b { font-family: var(--display); font-weight: 400; color: #ef4444; font-size: 22px; display: block; }
+.fdone span { font-size: 12px; font-weight: 800; color: var(--sub); }
+.down { display: block; margin: 0 auto; width: 22px; height: 22px; }
+
+/* 1日の流れ */
+.days { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 18px; }
+.day { background: #fff; border: 3px solid var(--ink); border-radius: 16px; padding: 12px; font-weight: 700; font-size: 14px; }
+.day b { display: block; font-family: var(--display); font-weight: 400; color: var(--sky-deep); font-size: 17px; }
+.day .hours { font-variant-numeric: tabular-nums; color: var(--flame); font-weight: 800; }
+
+/* キャラクター */
+.chars .eyebrow, .chars .h2, .chars .sec-lead { text-align: center; margin-left: auto; margin-right: auto; }
+.chars .sec-lead { color: var(--ink); }
+.char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; margin-top: 28px; }
+.char { background: #fff; color: var(--ink); border: 4px solid var(--ink); border-radius: 22px; padding: 14px; display: grid; grid-template-rows: 150px auto; gap: 8px; }
+.char img { height: 150px; width: 100%; object-fit: contain; }
+.char h3 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 20px; }
+.char .breed { display: inline-block; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 0 10px; color: #fff; margin-left: 6px; vertical-align: middle; }
+.char p { margin: 4px 0 0; font-size: 14px; font-weight: 700; color: var(--sub); }
+
+/* ダウンロード */
+.cta { text-align: center; padding-bottom: 96px; }
+.cta .wrap { max-width: 720px; background: linear-gradient(180deg, var(--sun), #fde68a); border: 4px solid var(--ink); border-radius: 32px; padding: 36px 20px; box-shadow: 0 8px 0 var(--ink); }
+.cta .stores { justify-content: center; margin-top: 18px; }
+.cta img.icon { width: 120px; height: 120px; border-radius: 28px; border: 4px solid var(--ink); margin: 0 auto 10px; box-shadow: 0 6px 0 var(--ink); }
+
+/* お問い合わせ・フッター */
+.mail { font-family: ui-monospace, Menlo, monospace; background: var(--paper); border: 2px dashed var(--ink); padding: 2px 8px; border-radius: 8px; }
+footer { background: var(--ink); color: #cbd5e1; padding: 32px 16px 40px; font-size: 13px; }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: center; }
+footer a { color: #fff; font-weight: 800; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.copy { margin-left: auto; }
+.note { font-size: 12px; color: var(--sub); }
+</style>
+</head>
+<body>
+<div class="sky-clouds" aria-hidden="true"><div class="cloud k1"></div><div class="cloud k2"></div><div class="cloud k3"></div><div class="cloud k4"></div></div>
+
+<nav class="nav" aria-label="サイト内メニュー">
+  <div class="nav-in">
+    <a class="nav-logo" href="#top"><img src="https://tttu732.github.io/wanchan-racers/icon.webp" alt="">ワンチャンレーサーズ</a>
+    <div class="nav-links">
+      <a href="#story">ストーリー</a>
+      <a href="#play">遊び方</a>
+      <a href="#characters">キャラクター</a>
+      <a href="#download">ダウンロード</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-in">
+    <div>
+      <span class="tag">iPhone向け 空中レースゲーム</span>
+      <h1 class="logo">ワンチャン<br>レーサーズ</h1>
+      <p class="catch">ジャンクから、空のてっぺんへ。</p>
+      <p class="lead">見習い整備士の柴犬ゴロウが、ガラクタの山から部品を集めてジェットエンジンを組み上げる。めざすは空いちばんの速さを決める「スカイGP」の優勝！</p>
+      <div class="stores">
+        <a class="store" href="#download" aria-disabled="true"><span><small>App Store</small><b>近日配信</b></span></a>
+        <span class="price">基本プレイ無料</span>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img class="hero-plane" src="https://tttu732.github.io/wanchan-racers/plane.webp" alt="ゴロウの小型ジェット機">
+      <div class="hero-cast">
+        <img class="c-tetsu" src="https://tttu732.github.io/wanchan-racers/tetsu.webp" alt="テツ親方">
+        <img class="c-goro" src="https://tttu732.github.io/wanchan-racers/goro.webp" alt="ゴロウ">
+        <img class="c-mimi" src="https://tttu732.github.io/wanchan-racers/mimi.webp" alt="ミミ">
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="story" id="story">
+  <div class="wrap story-grid">
+    <div>
+      <p class="eyebrow">STORY</p>
+      <h2 class="h2">財布の中身は<br>3ワンコイン。</h2>
+      <p class="sec-lead">空の港町ワンダーポート。下町の整備工場「テツ整備」が、大企業に取り上げられそうになった。工場を守るカギは、優勝賞金1000万ワンコインのスカイグランプリ。でも新品のエンジンを買うお金なんて、どこにもない。</p>
+    </div>
+    <div class="talk">
+      <div class="talk-row"><img src="https://tttu732.github.io/wanchan-racers/mimi.webp" alt="ミミ"><div class="bubble"><span class="who">ミミ</span>だったら、ジャンクから作ればいいじゃない。うちのガラクタ山には、まだ使える部品が眠ってるわよ。</div></div>
+      <div class="talk-row"><img src="https://tttu732.github.io/wanchan-racers/goro.webp" alt="ゴロウ"><div class="bubble"><span class="who">ゴロウ</span>…やる。ボクがジャンク品を集めて、最強のエンジンを組み上げる。そして一攫千金だ！</div></div>
+      <div class="talk-row"><img src="https://tttu732.github.io/wanchan-racers/tetsu.webp" alt="テツ親方"><div class="bubble"><span class="who">テツ親方</span>ったく、しょうがねえ。ほれ、50ワンコインだ。これで部品を直せ。</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="points" id="play">
+  <div class="wrap">
+    <p class="eyebrow">HOW TO PLAY</p>
+    <h2 class="h2">集めて、組んで、飛ぶ。</h2>
+    <p class="sec-lead">部品探しからレースまで、ぜんぶ自分の手で。ガラクタだらけのエンジンが、少しずつピカピカに変わっていく。</p>
+
+    <div class="point">
+      <div class="point-art">
+        <div class="phones phones3">
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_scan_camera.webp" alt="バーコードを読み込む画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_scan_scrub.webp" alt="ジャンクの山を指でこする画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_scan_reveal.webp" alt="スーパーレア部品を発見した画面"></div>
+        </div>
+      </div>
+      <div class="point-text">
+        <span class="point-no">POINT 01</span>
+        <h3>身の回りのバーコードで<br>ジャンク探し</h3>
+        <p>おかしの箱、本、ペットボトル。カメラでバーコードを読みこむと、ミミと一緒にジャンクの山を掘り出せる。指でこすって出てきたのは、ただのガラクタ？ それとも光り輝くレア部品？</p>
+        <div class="chips"><span class="chip">1日5回</span><span class="chip">こすって発掘</span><span class="chip">レアは光る</span></div>
+      </div>
+    </div>
+
+    <div class="point">
+      <div class="point-art engine-pair">
+        <figure><img src="https://tttu732.github.io/wanchan-racers/engine_junk.webp" alt="ジャンク部品だけのエンジン"><figcaption>はじめは、サビだらけのジャンクエンジン</figcaption></figure>
+        <p class="arrow" aria-hidden="true">▼</p>
+        <figure><img src="https://tttu732.github.io/wanchan-racers/engine_custom.webp" alt="いろいろなメーカーの部品で組んだエンジン"><figcaption>部品を集めて、自分だけのエンジンへ</figcaption></figure>
+      </div>
+      <div class="point-text">
+        <span class="point-no">POINT 02</span>
+        <h3>ジェットエンジンを<br>まるごとカスタマイズ</h3>
+        <p>ファンブレード、コンプレッサー、タービン、アフターバーナー。19の部位に、4つのメーカーの部品を組みこもう。推力、最高速、加速、耐熱。組み合わせしだいで性能も見た目も変わる。使いこんだ部品はワンコインでリペア。</p>
+        <div class="chips"><span class="chip">19部位</span><span class="chip">N・R・SR・UR</span><span class="chip">メーカーのセットボーナス</span><span class="chip">エンジン総合試験</span></div>
+      </div>
+    </div>
+
+    <div class="point">
+      <div class="point-art">
+        <div class="phones">
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_race1.webp" alt="コックピット視点のレース画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_cutin.webp" alt="スキル発動のカットイン"></div>
+        </div>
+      </div>
+      <div class="point-text">
+        <span class="point-no">POINT 03</span>
+        <h3>縦画面の3D空中レース<br>「スカイGP」</h3>
+        <p>操縦かんで空を駆け、光るリングをくぐってブーストゲージをためる。ゲージがたまったらスキル発動！ ただし使いすぎるとオーバーヒート。毎週日曜日の本番で勝ち抜いて、全10ステージの頂点をめざせ。</p>
+        <div class="chips"><span class="chip">片手で遊べる縦画面</span><span class="chip">コックピット／うしろ視点</span><span class="chip">全10ステージ</span></div>
+      </div>
+    </div>
+
+    <div class="point">
+      <div class="point-art">
+        <div class="phones phones3">
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_fac_step.webp" alt="タイミングよくタップする工程の画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_fac_coat.webp" alt="色と光沢を選ぶコーティング画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_fac_done.webp" alt="オリジナル部品の完成画面"></div>
+        </div>
+        <div class="fflow" aria-label="製造の工程">
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_melt.webp" alt="">溶かす</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_ingot.webp" alt="">インゴット</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_forge.webp" alt="">鍛造・加工</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_wash.webp" alt="">洗浄</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_inspect.webp" alt="">検査</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_heat.webp" alt="">熱処理</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_inspect2.webp" alt="">検査</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_coat.webp" alt="">コーティング</div>
+          <svg class="farrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 2 L12 8 L4 14" fill="none" stroke="#f97316" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="fstep"><img src="https://tttu732.github.io/wanchan-racers/fl_inspect.webp" alt="">最終検査</div>
+        </div>
+        <svg class="down" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 7 L11 15 L18 7" fill="none" stroke="#f97316" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="fdone"><div class="card"><img src="https://tttu732.github.io/wanchan-racers/part_done.webp" alt="完成したオリジナルのファンブレード"><div><b>完成！</b><span>自分の工房の名前入り<br>オリジナル部品</span></div></div></div>
+      </div>
+      <div class="point-text">
+        <span class="point-no">POINT 04</span>
+        <h3>工場でオリジナル部品を<br>製造しよう</h3>
+        <p>ストーリーが進むと工場が拡張できる。鉄くずを溶かして、インゴットに流しこみ、鍛造して、洗って、熱処理して…。タイミングよくタップするほどレア部品のチャンス。色と光沢を選んで、自分の工房の名前入り部品が完成！</p>
+        <div class="chips"><span class="chip">7工程のタイミング</span><span class="chip">色23種・光沢8種</span><span class="chip">確定演出つき</span></div>
+      </div>
+    </div>
+
+    <div class="point">
+      <div class="point-art">
+        <div class="phones">
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_home.webp" alt="1日の予定を決めるホーム画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_job.webp" alt="バイトで鉄くずや銅線を拾う画面"></div>
+        </div>
+        <div class="days">
+          <div class="day"><b>トレーニング</b><span class="hours">3時間</span>操縦・集中・体力・度胸をきたえる</div>
+          <div class="day"><b>バイト</b><span class="hours">4時間</span>ゴミ山をスワイプして鉄くずや銅線を拾う</div>
+          <div class="day"><b>ジャンク探し</b><span class="hours">1時間</span>バーコードで部品を発掘</div>
+          <div class="day"><b>日曜日</b><span class="hours">本番</span>スカイGPの本番レース</div>
+        </div>
+        <p class="job-cap">バイトでスワイプして拾えるもの</p>
+        <div class="icon-row">
+          <figure><img src="https://tttu732.github.io/wanchan-racers/j_scrap.webp" alt="">鉄くず</figure>
+          <figure><img src="https://tttu732.github.io/wanchan-racers/j_gear.webp" alt="">歯車</figure>
+          <figure><img src="https://tttu732.github.io/wanchan-racers/j_copper.webp" alt="">銅線</figure>
+          <figure><img src="https://tttu732.github.io/wanchan-racers/m_au.webp" alt="">金</figure>
+        </div>
+      </div>
+      <div class="point-text">
+        <span class="point-no">POINT 05</span>
+        <h3>8時から18時まで。<br>1週間をどう使う？</h3>
+        <p>1日は10時間。トレーニングで腕をみがくか、バイトで鉄くずや銅線を拾ってお金を稼ぐか、ジャンク探しに出かけるか。疲れと相談しながら予定を組んで、日曜日の本番にそなえよう。水曜日は宝くじの当選発表も。</p>
+        <div class="chips"><span class="chip">日付が進むゲーム</span><span class="chip">疲れゲージ</span><span class="chip">ゴールドラッシュ</span></div>
+      </div>
+    </div>
+
+    <div class="point">
+      <div class="point-art">
+        <div class="phones">
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_race3.webp" alt="うしろ視点のレース画面"></div>
+          <div class="phone"><img src="https://tttu732.github.io/wanchan-racers/shot_jet.webp" alt="エンジン総合試験のジェット噴射"></div>
+        </div>
+      </div>
+      <div class="point-text">
+        <span class="point-no">POINT 06</span>
+        <h3>Game Center で<br>オンライン対戦</h3>
+        <p>エンジンの総合力が近いプレイヤー同士で、最大4人のリアルタイム対戦。人数が足りないときは、同じくらいの強さのゴーストが入って6機で走る。自慢のエンジンで、全国のライバルに挑もう。</p>
+        <div class="chips"><span class="chip">最大4人</span><span class="chip">総合力でマッチング</span><span class="chip">ゴースト参戦</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="chars" id="characters">
+  <div class="wrap">
+    <p class="eyebrow">CHARACTERS</p>
+    <h2 class="h2">ワンダーポートの仲間とライバル</h2>
+    <p class="sec-lead">下町の整備工場から、名門チーム、大企業の社長まで。空をめぐる犬たちのドラマ。</p>
+    <div class="char-grid">
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/goro.webp" alt=""><div><h3>ゴロウ<span class="breed" style="background:#f59e0b">柴犬</span></h3><p>テツ整備の見習い航空機整備士。腕はいいけど、いつも金欠。好物はちくわ。</p></div></article>
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/tetsu.webp" alt=""><div><h3>テツ親方<span class="breed" style="background:#78716c">ブルドッグ</span></h3><p>下町の小さな整備工場「テツ整備」の親方。ゴロウの師匠。腰が弱い。</p></div></article>
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/mimi.webp" alt=""><div><h3>ミミ<span class="breed" style="background:#f472b6">ポメラニアン</span></h3><p>ジャンク屋「ミミの宝物庫」の看板娘。ガラクタの目利きは街いち番。</p></div></article>
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/ganzo.webp" alt=""><div><h3>ガンゾウ親方<span class="breed" style="background:#ca8a04">秋田犬</span></h3><p>ワンチャン建設の社長兼現場監督。豪快で涙もろい人情家。口ぐせは「ワンチャンあるぞ！」。</p></div></article>
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/koharu.webp" alt=""><div><h3>コハル<span class="breed" style="background:#22c55e">ボーダーコリー</span></h3><p>最年少の天才パイロット。計算ずくの飛び方が武器。</p></div></article>
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/leon.webp" alt=""><div><h3>レオン<span class="breed" style="background:#64748b">シェパード</span></h3><p>名門チーム「シルバーファング」のエース。ゴロウを「ジャンク犬」と呼ぶ。</p></div></article>
+      <article class="char"><img src="https://tttu732.github.io/wanchan-racers/kaiser.webp" alt=""><div><h3>カイザー<span class="breed" style="background:#111827">ドーベルマン</span></h3><p>大企業ワンダーエアロの社長。テツ整備の土地を狙っている。</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="download">
+  <div class="wrap">
+    <img class="icon" src="https://tttu732.github.io/wanchan-racers/icon.webp" alt="ワンチャンレーサーズのアプリアイコン">
+    <h2 class="h2">ワンチャン、あるぞ！</h2>
+    <p class="sec-lead" style="margin:0 auto;color:var(--ink)">基本プレイ無料（広告あり）。iPhone で近日配信予定です。</p>
+    <div class="stores">
+      <a class="store" href="#download" aria-disabled="true"><span><small>App Store</small><b>近日配信</b></span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="privacy.html">プライバシーポリシー</a>
+    <a href="terms.html">利用規約</a>
+    <span class="copy">&copy; 2026 （運営者名） ワンチャンレーサーズ</span>
+  </div>
+</footer>
+
+</body>
+</html>
